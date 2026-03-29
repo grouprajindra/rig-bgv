@@ -1,5 +1,5 @@
 // Configuration
-const API_URL = 'https://script.google.com/macros/d/YOUR_APPS_SCRIPT_ID/userweb'; // Will be updated with actual ID
+const API_URL = 'https://script.google.com/macros/s/AKfycbyKXmXwVSGRVLC0K6zkciz765nL4SDRC1H0x3egmhUZK0zL5DAuwMT57kp1iYB5bOKnXg/exec'; // Will be updated with actual ID
 const TEMP_ADMIN_CREDENTIALS = {
     username: 'admin',
     password: 'admin123'
