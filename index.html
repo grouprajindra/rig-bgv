@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Raj Indra Group - Portal</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Login Container -->
+    <div id="loginContainer" class="login-container active">
+        <div class="login-box">
+            <div class="logo-container">
+                <img src="logo.png" alt="Raj Indra Group Logo" class="logo">
+                <h1>RAJ INDRA GROUP</h1>
+                <p class="tagline">WORKFORCE | TAXATION | FINANCIAL SERVICES</p>
+            </div>
+
+            <form id="loginForm" class="login-form">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" placeholder="Enter username" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="password" placeholder="Enter password" required>
+                        <button type="button" id="togglePassword" class="toggle-password">
+                            <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <button type="submit" class="login-btn">Login</button>
+            </form>
+
+            <p class="register-link">New Associate? <a href="#" id="showRegister">Register Here</a></p>
+            <div id="loginError" class="error-message"></div>
+        </div>
+    </div>
+
+    <!-- Registration Container -->
+    <div id="registerContainer" class="register-container">
+        <div class="register-box">
+            <div class="logo-container">
+                <img src="logo.png" alt="Raj Indra Group Logo" class="logo">
+                <h2>New Associate Registration</h2>
+            </div>
+
+            <form id="registerForm" class="register-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="regFirstName">First Name</label>
+                        <input type="text" id="regFirstName" placeholder="First Name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="regLastName">Last Name</label>
+                        <input type="text" id="regLastName" placeholder="Last Name" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="regEmail">Email</label>
+                    <input type="email" id="regEmail" placeholder="Email address" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="regPhone">Phone Number</label>
+                    <input type="tel" id="regPhone" placeholder="Phone number" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="regDepartment">Department</label>
+                    <select id="regDepartment" required>
+                        <option value="">Select Department</option>
+                        <option value="Workforce">Workforce</option>
+                        <option value="Taxation">Taxation</option>
+                        <option value="Financial Services">Financial Services</option>
+                    </select>
+                </div>
+
+                <div class="form-row">
+                    <button type="submit" class="submit-btn">Submit for Approval</button>
+                    <button type="button" class="cancel-btn" id="cancelRegister">Back to Login</button>
+                </div>
+            </form>
+            <div id="registerError" class="error-message"></div>
+        </div>
+    </div>
+
+    <!-- Dashboard Container -->
+    <div id="dashboardContainer" class="dashboard-container">
+        <!-- Navigation -->
+        <nav class="navbar">
+            <div class="navbar-left">
+                <img src="logo.png" alt="Logo" class="navbar-logo">
+                <h2>Raj Indra Group</h2>
+            </div>
+            <div class="navbar-right">
+                <span id="userGreeting" class="user-greeting"></span>
+                <button id="logoutBtn" class="logout-btn">Logout</button>
+            </div>
+        </nav>
+
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <ul class="nav-menu">
+                <li><a href="#" class="nav-link active" data-panel="dashboard">Dashboard</a></li>
+                <li><a href="#" class="nav-link" data-panel="profile">Profile</a></li>
+                <li><a href="#" class="nav-link" data-panel="leads">Leads</a></li>
+                <li><a href="#" class="nav-link" data-panel="financial">Financial</a></li>
+                <li id="adminLink" style="display:none;"><a href="#" class="nav-link" data-panel="admin">Admin Panel</a></li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Dashboard Panel -->
+            <div id="dashboard" class="panel active">
+                <h2>Dashboard</h2>
+                <div class="dashboard-grid">
+                    <div class="card">
+                        <h3>Welcome</h3>
+                        <p id="dashboardWelcome"></p>
+                    </div>
+                    <div class="card">
+                        <h3>Quick Stats</h3>
+                        <p>Your profile and leads information</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Panel -->
+            <div id="profile" class="panel">
+                <h2>My Profile</h2>
+                <div class="profile-container">
+                    <div class="profile-card">
+                        <div class="profile-header">
+                            <h3 id="profileName"></h3>
+                            <button id="editProfileBtn" class="edit-btn">Edit Profile</button>
+                        </div>
+                        <div id="profileDetails" class="profile-details"></div>
+                        <button id="generateIDBtn" class="btn-primary">Generate ID Card</button>
+                    </div>
+                </div>
+
+                <!-- Edit Profile Form -->
+                <div id="editProfileForm" style="display:none;" class="edit-form">
+                    <h3>Edit Profile</h3>
+                    <form id="profileForm">
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" id="editEmail" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Phone</label>
+                            <input type="tel" id="editPhone" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Department</label>
+                            <input type="text" id="editDepartment" required>
+                        </div>
+                        <button type="submit" class="btn-primary">Save Changes</button>
+                        <button type="button" id="cancelEditBtn" class="btn-secondary">Cancel</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Leads Panel -->
+            <div id="leads" class="panel">
+                <h2>Leads Management</h2>
+                <div class="leads-container">
+                    <button id="addLeadBtn" class="btn-primary">Add New Lead</button>
+                    <div id="leadsList" class="leads-list"></div>
+                </div>
+
+                <!-- Add Lead Form -->
+                <div id="addLeadForm" style="display:none;" class="add-form">
+                    <h3>Add New Lead</h3>
+                    <form id="leadForm">
+                        <div class="form-group">
+                            <label>Client Name</label>
+                            <input type="text" id="leadClientName" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" id="leadEmail" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Phone</label>
+                            <input type="tel" id="leadPhone" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Service Type</label>
+                            <select id="leadService" required>
+                                <option value="">Select Service</option>
+                                <option value="Workforce">Workforce</option>
+                                <option value="Taxation">Taxation</option>
+                                <option value="Financial Services">Financial Services</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Charges (₹)</label>
+                            <input type="number" id="leadCharges" required>
+                        </div>
+                        <button type="submit" class="btn-primary">Add Lead</button>
+                        <button type="button" id="cancelLeadBtn" class="btn-secondary">Cancel</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Financial Panel -->
+            <div id="financial" class="panel">
+                <h2>Financial Dashboard</h2>
+                <div class="financial-grid">
+                    <div class="stat-card">
+                        <h3>Total Income</h3>
+                        <p id="totalIncome" class="stat-value">₹0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Pending</h3>
+                        <p id="totalPending" class="stat-value">₹0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Completed</h3>
+                        <p id="totalCompleted" class="stat-value">₹0</p>
+                    </div>
+                </div>
+                <div class="invoices-section">
+                    <h3>Invoices</h3>
+                    <button id="sendInvoiceBtn" class="btn-primary">Send Invoice</button>
+                    <div id="invoicesList" class="invoices-list"></div>
+                </div>
+            </div>
+
+            <!-- Admin Panel -->
+            <div id="admin" class="panel" style="display:none;">
+                <h2>Admin Dashboard</h2>
+                
+                <!-- Employee Management Tab -->
+                <div class="admin-tabs">
+                    <button class="tab-btn active" data-tab="employees">Employee Management</button>
+                    <button class="tab-btn" data-tab="leads">Lead Assignment</button>
+                    <button class="tab-btn" data-tab="financial">Financial Dashboard</button>
+                    <button class="tab-btn" data-tab="approvals">Approvals</button>
+                </div>
+
+                <!-- Employees Tab -->
+                <div id="employees" class="admin-tab-content active">
+                    <h3>Employee Management</h3>
+                    <button id="addEmployeeBtn" class="btn-primary">Add New Employee</button>
+                    <div id="employeesList" class="employees-list"></div>
+                </div>
+
+                <!-- Leads Assignment Tab -->
+                <div id="leads-assign" class="admin-tab-content">
+                    <h3>Lead Assignment</h3>
+                    <div id="allLeadsList" class="leads-list"></div>
+                </div>
+
+                <!-- Financial Tab -->
+                <div id="financial-admin" class="admin-tab-content">
+                    <h3>Financial Dashboard</h3>
+                    <div class="admin-financial-grid">
+                        <div class="stat-card">
+                            <h3>Total Revenue</h3>
+                            <p id="adminTotalRevenue" class="stat-value">₹0</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Total Payout</h3>
+                            <p id="adminTotalPayout" class="stat-value">₹0</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Net Profit</h3>
+                            <p id="adminNetProfit" class="stat-value">₹0</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Approvals Tab -->
+                <div id="approvals" class="admin-tab-content">
+                    <h3>Pending Approvals</h3>
+                    <div id="approvalsList" class="approvals-list"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ID Card Modal -->
+    <div id="idCardModal" class="modal" style="display:none;">
+        <div class="modal-content id-card">
+            <button class="close-modal">&times;</button>
+            <div class="id-card-container">
+                <div class="id-card-front">
+                    <div class="id-header">
+                        <img src="logo.png" alt="Logo" class="id-logo">
+                        <h2>Raj Indra Group</h2>
+                    </div>
+                    <div class="id-body">
+                        <img id="idPhoto" class="id-photo" src="https://via.placeholder.com/150" alt="Photo">
+                        <div class="id-info">
+                            <p><strong>Name:</strong> <span id="idName"></span></p>
+                            <p><strong>ID:</strong> <span id="idNumber"></span></p>
+                            <p><strong>Dept:</strong> <span id="idDept"></span></p>
+                            <p><strong>Email:</strong> <span id="idEmail"></span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button id="downloadIDBtn" class="btn-primary">Download ID Card</button>
+        </div>
+    </div>
+
+    <!-- Invoice Modal -->
+    <div id="invoiceModal" class="modal" style="display:none;">
+        <div class="modal-content invoice-modal">
+            <button class="close-modal">&times;</button>
+            <h2>Send Invoice</h2>
+            <form id="invoiceForm">
+                <div class="form-group">
+                    <label>Select Lead</label>
+                    <select id="invoiceLeadSelect" required>
+                        <option value="">Select a lead</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Invoice Amount (₹)</label>
+                    <input type="number" id="invoiceAmount" required>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="invoiceDescription" rows="4"></textarea>
+                </div>
+                <button type="submit" class="btn-primary">Send Invoice</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
