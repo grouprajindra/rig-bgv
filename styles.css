@@ -202,96 +202,6 @@ body {
     display: block;
 }
 
-/* ==================== REGISTRATION PAGE ==================== */
-.register-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(135deg, var(--primary-color) 0%, #2c5aa0 100%);
-    z-index: 1000;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s ease;
-}
-
-.register-container.active {
-    opacity: 1;
-    pointer-events: auto;
-}
-
-.register-box {
-    background: white;
-    border-radius: 15px;
-    padding: 40px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-    width: 100%;
-    max-width: 500px;
-    animation: slideUp 0.5s ease;
-    max-height: 90vh;
-    overflow-y: auto;
-}
-
-.register-box .logo-container {
-    margin-bottom: 25px;
-}
-
-.register-form {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-.form-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
-}
-
-.form-row.full {
-    grid-template-columns: 1fr;
-}
-
-.submit-btn,
-.cancel-btn,
-.btn-primary,
-.btn-secondary {
-    padding: 12px 20px;
-    border: none;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.submit-btn,
-.btn-primary {
-    background: linear-gradient(135deg, var(--primary-color) 0%, #2c5aa0 100%);
-    color: white;
-}
-
-.submit-btn:hover,
-.btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 20px rgba(30, 58, 95, 0.4);
-}
-
-.cancel-btn,
-.btn-secondary {
-    background: var(--border-color);
-    color: var(--text-dark);
-}
-
-.cancel-btn:hover,
-.btn-secondary:hover {
-    background: #d0d0d0;
-}
-
 /* ==================== DASHBOARD ==================== */
 .dashboard-container {
     display: flex;
@@ -363,6 +273,10 @@ body {
     background: rgba(255, 255, 255, 0.3);
 }
 
+.hamburger-menu {
+    display: none;
+}
+
 .sidebar {
     position: fixed;
     left: 0;
@@ -373,6 +287,7 @@ body {
     border-right: 1px solid var(--border-color);
     padding: 20px 0;
     overflow-y: auto;
+    z-index: 50;
 }
 
 .nav-menu {
@@ -666,6 +581,7 @@ body {
     margin-bottom: 25px;
     border-bottom: 2px solid var(--border-color);
     overflow-x: auto;
+    flex-wrap: wrap;
 }
 
 .tab-btn {
@@ -789,6 +705,37 @@ body {
     background: #da190b;
 }
 
+/* ==================== BUTTONS ==================== */
+.btn-primary,
+.btn-secondary {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-primary {
+    background: var(--primary-color);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #152a47;
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    background: var(--border-color);
+    color: var(--text-dark);
+}
+
+.btn-secondary:hover {
+    background: #d0d0d0;
+}
+
 /* ==================== MODALS ==================== */
 .modal {
     position: fixed;
@@ -894,17 +841,126 @@ body {
     margin: 8px 0;
 }
 
-/* ==================== INVOICE ==================== */
-.invoice-modal {
-    max-width: 600px;
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 1024px) {
+    .main-content {
+        padding: 20px;
+    }
+
+    .dashboard-grid,
+    .admin-financial-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
-.invoice-modal h2 {
-    color: var(--primary-color);
-    margin-bottom: 25px;
+@media (max-width: 768px) {
+    .hamburger-menu {
+        display: block !important;
+    }
+
+    .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+        width: 100%;
+        z-index: 99;
+    }
+
+    .sidebar.active {
+        transform: translateX(0);
+    }
+
+    .main-content {
+        margin-left: 0;
+        margin-top: 70px;
+        padding: 15px;
+    }
+
+    .navbar-left h2 {
+        font-size: 16px;
+        display: none;
+    }
+
+    .user-greeting {
+        display: none;
+    }
+
+    .dashboard-grid,
+    .admin-financial-grid,
+    .financial-grid,
+    .leads-list,
+    .employees-list,
+    .approvals-list {
+        grid-template-columns: 1fr;
+    }
+
+    .modal-content {
+        width: 95%;
+        padding: 20px;
+    }
+
+    .profile-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .admin-tabs {
+        flex-wrap: wrap;
+    }
+
+    .tab-btn {
+        padding: 10px 15px;
+        font-size: 12px;
+    }
+
+    .main-content h2 {
+        font-size: 20px;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+    }
 }
 
-/* ==================== ADD FORMS ==================== */
+@media (max-width: 480px) {
+    .navbar {
+        padding: 0 10px;
+    }
+
+    .navbar-logo {
+        width: 35px;
+        height: 35px;
+    }
+
+    .main-content {
+        padding: 10px;
+    }
+
+    .main-content h2 {
+        font-size: 18px;
+        margin-bottom: 15px;
+    }
+
+    .modal-content {
+        max-width: 100%;
+    }
+
+    .lead-actions {
+        flex-direction: column;
+    }
+
+    .approval-actions {
+        flex-direction: column;
+    }
+
+    .btn-primary,
+    .btn-secondary {
+        padding: 10px 15px;
+        font-size: 13px;
+    }
+}
+
+/* ==================== SMALL ADDITIONS ==================== */
 .add-form,
 .edit-form {
     background: white;
@@ -920,129 +976,7 @@ body {
     margin-bottom: 20px;
 }
 
-/* ==================== RESPONSIVE ==================== */
-@media (max-width: 768px) {
-    .sidebar {
-        transform: translateX(-100%);
-        transition: transform 0.3s ease;
-        z-index: 99;
-        width: 100%;
-    }
-
-    .sidebar.active {
-        transform: translateX(0);
-    }
-
-    .main-content {
-        margin-left: 0;
-        padding: 20px;
-    }
-
-    .navbar {
-        padding: 0 15px;
-    }
-
-    .navbar-left h2 {
-        font-size: 16px;
-    }
-
-    .user-greeting {
-        display: none;
-    }
-
-    .form-row {
-        grid-template-columns: 1fr;
-    }
-
-    .dashboard-grid,
-    .admin-financial-grid,
-    .financial-grid,
-    .leads-list,
-    .employees-list,
-    .approvals-list {
-        grid-template-columns: 1fr;
-    }
-
-    .login-box,
-    .register-box {
-        width: 95%;
-        padding: 25px;
-    }
-
-    .modal-content {
-        width: 95%;
-        padding: 20px;
-    }
-
-    .admin-tabs {
-        flex-wrap: wrap;
-    }
-
-    .tab-btn {
-        padding: 10px 15px;
-        font-size: 12px;
-    }
-}
-
-@media (max-width: 480px) {
-    .navbar-left {
-        gap: 8px;
-    }
-
-    .navbar-logo {
-        width: 35px;
-        height: 35px;
-    }
-
-    .navbar-left h2 {
-        font-size: 14px;
-    }
-
-    .sidebar {
-        width: 80%;
-    }
-
-    .main-content h2 {
-        font-size: 20px;
-    }
-
-    .login-box,
-    .register-box {
-        padding: 20px;
-    }
-
-    .logo {
-        width: 60px;
-        height: 60px;
-    }
-
-    .logo-container h1 {
-        font-size: 20px;
-    }
-
-    .tagline {
-        font-size: 10px;
-    }
-
-    .submit-btn,
-    .cancel-btn,
-    .btn-primary,
-    .btn-secondary {
-        padding: 10px 15px;
-        font-size: 13px;
-    }
-
-    .profile-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 15px;
-    }
-
-    .profile-details {
-        gap: 10px;
-    }
-
-    .lead-actions {
-        flex-direction: column;
-    }
+small {
+    color: var(--text-light);
+    display: block;
 }
