@@ -1,5 +1,6 @@
 // Configuration
-const API_URL = 'https://script.google.com/macros/s/AKfycbyKXmXwVSGRVLC0K6zkciz765nL4SDRC1H0x3egmhUZK0zL5DAuwMT57kp1iYB5bOKnXg/exec'; // Will be updated with actual ID
+const API_URL = 'https://script.google.com/macros/d/https://script.google.com/macros/s/AKfycbyKXmXwVSGRVLC0K6zkciz765nL4SDRC1H0x3egmhUZK0zL5DAuwMT57kp1iYB5bOKnXg/exec
+/userweb'; // Replace with your deployment URL
 const TEMP_ADMIN_CREDENTIALS = {
     username: 'admin',
     password: 'admin123'
@@ -16,29 +17,34 @@ let allData = {
 
 // DOM Elements
 const loginContainer = document.getElementById('loginContainer');
-const registerContainer = document.getElementById('registerContainer');
 const dashboardContainer = document.getElementById('dashboardContainer');
 const loginForm = document.getElementById('loginForm');
-const registerForm = document.getElementById('registerForm');
 const logoutBtn = document.getElementById('logoutBtn');
 const togglePasswordBtn = document.getElementById('togglePassword');
 const passwordInput = document.getElementById('password');
+const toggleSidebarBtn = document.getElementById('toggleSidebarBtn');
+const sidebar = document.querySelector('.sidebar');
 
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', () => {
     initializeEventListeners();
     checkLoginStatus();
+    showToggleButton();
 });
 
 // ==================== EVENT LISTENERS ====================
 function initializeEventListeners() {
-    // Login & Registration
+    // Login
     loginForm.addEventListener('submit', handleLogin);
-    registerForm.addEventListener('submit', handleRegister);
-    document.getElementById('showRegister').addEventListener('click', showRegisterForm);
-    document.getElementById('cancelRegister').addEventListener('click', showLoginForm);
     togglePasswordBtn.addEventListener('click', togglePasswordVisibility);
     logoutBtn.addEventListener('click', handleLogout);
+
+    // Mobile sidebar toggle
+    if (toggleSidebarBtn) {
+        toggleSidebarBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+        });
+    }
 
     // Navigation
     document.querySelectorAll('.nav-link').forEach(link => {
@@ -50,6 +56,12 @@ function initializeEventListeners() {
     document.getElementById('cancelEditBtn').addEventListener('click', hideEditProfile);
     document.getElementById('profileForm').addEventListener('submit', handleProfileUpdate);
     document.getElementById('generateIDBtn').addEventListener('click', generateIDCard);
+
+    // Photo upload
+    const photoInput = document.getElementById('editPhoto');
+    if (photoInput) {
+        photoInput.addEventListener('change', handlePhotoUpload);
+    }
 
     // Leads
     document.getElementById('addLeadBtn').addEventListener('click', showAddLeadForm);
@@ -69,13 +81,62 @@ function initializeEventListeners() {
         btn.addEventListener('click', closeModal);
     });
 
+    // Invoice Modal
+    document.getElementById('invoiceForm').addEventListener('submit', handleSendInvoice);
+
     // Admin Functions
     document.getElementById('addEmployeeBtn').addEventListener('click', () => {
         alert('Employee management will be implemented');
     });
+}
 
-    // Invoice Modal
-    document.getElementById('invoiceForm').addEventListener('submit', handleSendInvoice);
+// ==================== MOBILE SIDEBAR ====================
+function showToggleButton() {
+    if (toggleSidebarBtn) {
+        if (window.innerWidth <= 768) {
+            toggleSidebarBtn.style.display = 'block';
+        }
+    }
+}
+
+window.addEventListener('resize', () => {
+    if (toggleSidebarBtn) {
+        if (window.innerWidth <= 768) {
+            toggleSidebarBtn.style.display = 'block';
+        } else {
+            toggleSidebarBtn.style.display = 'none';
+            sidebar.classList.remove('active');
+        }
+    }
+});
+
+// Close sidebar when link is clicked on mobile
+document.querySelectorAll('.nav-link').forEach(link => {
+    link.addEventListener('click', () => {
+        if (window.innerWidth <= 768) {
+            sidebar.classList.remove('active');
+        }
+    });
+});
+
+// ==================== PHOTO UPLOAD ====================
+function handlePhotoUpload(e) {
+    const file = e.target.files[0];
+    if (file) {
+        // Check file size (max 2MB)
+        if (file.size > 2 * 1024 * 1024) {
+            alert('Photo size should be less than 2MB');
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            currentUser.photoBase64 = event.target.result;
+            document.getElementById('profilePhotoImg').src = event.target.result;
+            console.log('Photo uploaded successfully');
+        };
+        reader.readAsDataURL(file);
+    }
 }
 
 // ==================== AUTHENTICATION ====================
@@ -96,7 +157,8 @@ async function handleLogin(e) {
             name: 'Administrator',
             email: 'admin@rajindra.com',
             role: 'admin',
-            department: 'Admin'
+            department: 'Admin',
+            phone: ''
         };
         
         showDashboard();
@@ -122,7 +184,6 @@ async function handleLogin(e) {
         }
     } catch (error) {
         console.error('Login error:', error);
-        // For demo purposes, allow login with test credentials
         errorDiv.textContent = 'Connection error. Please check your setup.';
         errorDiv.classList.add('show');
     }
@@ -130,42 +191,10 @@ async function handleLogin(e) {
     document.getElementById('loginForm').reset();
 }
 
-async function handleRegister(e) {
-    e.preventDefault();
-
-    const formData = {
-        firstName: document.getElementById('regFirstName').value,
-        lastName: document.getElementById('regLastName').value,
-        email: document.getElementById('regEmail').value,
-        phone: document.getElementById('regPhone').value,
-        department: document.getElementById('regDepartment').value,
-        status: 'pending_approval'
-    };
-
-    try {
-        const response = await fetch(API_URL + '?action=register', {
-            method: 'POST',
-            body: JSON.stringify(formData)
-        });
-
-        const result = await response.json();
-
-        if (result.success) {
-            alert('Registration submitted! Admin approval pending.');
-            showLoginForm();
-            document.getElementById('registerForm').reset();
-        } else {
-            alert('Registration failed: ' + result.message);
-        }
-    } catch (error) {
-        console.error('Register error:', error);
-        alert('Registration error. Please try again.');
-    }
-}
-
 function handleLogout() {
     currentUser = null;
-    showLoginForm();
+    loginContainer.classList.remove('hidden');
+    dashboardContainer.classList.remove('active');
     loginForm.reset();
     document.getElementById('username').focus();
 }
@@ -173,18 +202,6 @@ function handleLogout() {
 function togglePasswordVisibility() {
     const isPassword = passwordInput.type === 'password';
     passwordInput.type = isPassword ? 'text' : 'password';
-}
-
-function showLoginForm() {
-    loginContainer.classList.remove('hidden');
-    registerContainer.classList.remove('active');
-    dashboardContainer.classList.remove('active');
-}
-
-function showRegisterForm(e) {
-    e.preventDefault();
-    loginContainer.classList.add('hidden');
-    registerContainer.classList.add('active');
 }
 
 function checkLoginStatus() {
@@ -198,7 +215,6 @@ function checkLoginStatus() {
 // ==================== DASHBOARD ====================
 function showDashboard() {
     loginContainer.classList.add('hidden');
-    registerContainer.classList.remove('active');
     dashboardContainer.classList.add('active');
 
     // Save user to localStorage
@@ -219,13 +235,22 @@ function showDashboard() {
 
 async function loadDashboardData() {
     try {
-        // In a real app, fetch from Google Sheets
-        // For now, use mock data
-        loadMockData();
-        updateDashboardUI();
+        // Try to fetch from Google Sheets
+        const response = await fetch(API_URL + '?action=getData', {
+            method: 'GET'
+        });
+        
+        if (response.ok) {
+            const result = await response.json();
+            allData = result.data || allData;
+        }
     } catch (error) {
         console.error('Error loading data:', error);
     }
+    
+    // Always load mock data for demo
+    loadMockData();
+    updateDashboardUI();
 }
 
 function loadMockData() {
@@ -277,6 +302,12 @@ function updateDashboardUI() {
 function loadEmployeeDashboard() {
     // Update Profile
     document.getElementById('profileName').textContent = currentUser.name;
+    
+    // Show profile photo if available
+    if (currentUser.photoBase64) {
+        document.getElementById('profilePhotoImg').src = currentUser.photoBase64;
+    }
+    
     document.getElementById('profileDetails').innerHTML = `
         <p><strong>Email:</strong> ${currentUser.email}</p>
         <p><strong>Phone:</strong> ${currentUser.phone || 'N/A'}</p>
@@ -365,16 +396,25 @@ async function handleProfileUpdate(e) {
             body: JSON.stringify(updatedUser)
         });
 
-        if (response.ok) {
+        const result = await response.json();
+
+        if (result.success) {
             currentUser = updatedUser;
             localStorage.setItem('currentUser', JSON.stringify(currentUser));
             hideEditProfile();
             loadEmployeeDashboard();
             alert('Profile updated successfully!');
+        } else {
+            alert('Update failed. Please try again.');
         }
     } catch (error) {
         console.error('Profile update error:', error);
-        alert('Error updating profile');
+        // Still update locally
+        currentUser = updatedUser;
+        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+        hideEditProfile();
+        loadEmployeeDashboard();
+        alert('Profile updated locally!');
     }
 }
 
@@ -385,12 +425,12 @@ function generateIDCard() {
     document.getElementById('idDept').textContent = currentUser.department;
     document.getElementById('idEmail').textContent = currentUser.email;
     
+    // Use uploaded photo or placeholder
+    if (currentUser.photoBase64) {
+        document.getElementById('idPhoto').src = currentUser.photoBase64;
+    }
+    
     modal.style.display = 'flex';
-
-    document.getElementById('downloadIDBtn').addEventListener('click', () => {
-        // In a real app, use html2canvas and jsPDF
-        alert('ID Card download functionality will be implemented with html2canvas library');
-    });
 }
 
 // ==================== LEADS ====================
@@ -407,6 +447,7 @@ async function handleAddLead(e) {
     e.preventDefault();
 
     const leadData = {
+        id: 'LEAD' + Date.now(),
         name: document.getElementById('leadClientName').value,
         email: document.getElementById('leadEmail').value,
         phone: document.getElementById('leadPhone').value,
@@ -429,15 +470,17 @@ async function handleAddLead(e) {
             allData.leads.push(leadData);
             displayLeads();
             hideAddLeadForm();
-            
-            // Send email notification
-            sendEmailNotification('lead_added', leadData);
-            
-            alert('Lead added successfully!');
+            alert('Lead added successfully! ✅');
+        } else {
+            alert('Failed to add lead');
         }
     } catch (error) {
         console.error('Add lead error:', error);
-        alert('Error adding lead');
+        // Still add locally
+        allData.leads.push(leadData);
+        displayLeads();
+        hideAddLeadForm();
+        alert('Lead added locally!');
     }
 }
 
@@ -445,7 +488,14 @@ function displayLeads() {
     const leadsContainer = document.getElementById('leadsList');
     leadsContainer.innerHTML = '';
 
-    allData.leads.forEach(lead => {
+    const userLeads = allData.leads.filter(l => l.assignedTo === currentUser.id);
+
+    if (userLeads.length === 0) {
+        leadsContainer.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--text-light); padding: 20px;">No leads yet. Add your first lead!</p>';
+        return;
+    }
+
+    userLeads.forEach(lead => {
         const leadCard = document.createElement('div');
         leadCard.className = 'lead-card';
         leadCard.innerHTML = `
@@ -463,23 +513,15 @@ function displayLeads() {
                     <option value="successful" ${lead.status === 'successful' ? 'selected' : ''}>Successful</option>
                     <option value="denied" ${lead.status === 'denied' ? 'selected' : ''}>Denied</option>
                 </select>
-                <button onclick="updateLeadStatus('${lead.id}', this)">Update</button>
+                <button type="button" onclick="updateLeadStatus('${lead.id}')">Update</button>
             </div>
         `;
         leadsContainer.appendChild(leadCard);
     });
-
-    // Add event listeners to status selects
-    document.querySelectorAll('.lead-status-select').forEach(select => {
-        select.addEventListener('change', function() {
-            this.parentElement.querySelector('button').onclick = () => 
-                updateLeadStatus(this.getAttribute('data-lead-id'), this.parentElement.querySelector('button'));
-        });
-    });
 }
 
-async function updateLeadStatus(leadId, button) {
-    const select = button.parentElement.querySelector('select');
+async function updateLeadStatus(leadId) {
+    const select = document.querySelector(`[data-lead-id="${leadId}"]`);
     const newStatus = select.value;
 
     try {
@@ -493,16 +535,18 @@ async function updateLeadStatus(leadId, button) {
             if (lead) {
                 lead.status = newStatus;
                 displayLeads();
-                
-                // Send email notification
-                sendEmailNotification('lead_status_updated', { ...lead, newStatus });
-                
-                alert('Lead status updated!');
+                alert('Lead status updated! ✅');
             }
         }
     } catch (error) {
         console.error('Update lead error:', error);
-        alert('Error updating lead');
+        // Still update locally
+        const lead = allData.leads.find(l => l.id === leadId);
+        if (lead) {
+            lead.status = newStatus;
+            displayLeads();
+            alert('Lead status updated locally!');
+        }
     }
 }
 
@@ -515,7 +559,8 @@ function showInvoiceModal() {
     const select = document.getElementById('invoiceLeadSelect');
     select.innerHTML = '<option value="">Select a lead</option>';
     
-    allData.leads.forEach(lead => {
+    const userLeads = allData.leads.filter(l => l.assignedTo === currentUser.id);
+    userLeads.forEach(lead => {
         const option = document.createElement('option');
         option.value = lead.id;
         option.textContent = `${lead.name} - ₹${lead.charges}`;
@@ -527,6 +572,7 @@ async function handleSendInvoice(e) {
     e.preventDefault();
 
     const invoiceData = {
+        id: 'INV' + Date.now(),
         leadId: document.getElementById('invoiceLeadSelect').value,
         amount: parseFloat(document.getElementById('invoiceAmount').value),
         description: document.getElementById('invoiceDescription').value,
@@ -546,24 +592,28 @@ async function handleSendInvoice(e) {
             allData.invoices.push(invoiceData);
             updateFinancialDashboard();
             closeModal();
-            
-            // Send email
-            sendEmailNotification('invoice_sent', invoiceData);
-            
-            alert('Invoice sent successfully!');
+            alert('Invoice sent successfully! ✅');
+        } else {
+            alert('Failed to send invoice');
         }
     } catch (error) {
         console.error('Send invoice error:', error);
-        alert('Error sending invoice');
+        // Still add locally
+        allData.invoices.push(invoiceData);
+        updateFinancialDashboard();
+        closeModal();
+        alert('Invoice created locally!');
     }
 }
 
 function updateFinancialDashboard() {
+    const userLeads = allData.leads.filter(l => l.assignedTo === currentUser.id);
+    
     let totalIncome = 0;
     let totalPending = 0;
     let totalCompleted = 0;
 
-    allData.leads.forEach(lead => {
+    userLeads.forEach(lead => {
         totalIncome += lead.charges;
         if (lead.status === 'pending') {
             totalPending += lead.charges;
@@ -580,7 +630,17 @@ function updateFinancialDashboard() {
     const invoicesList = document.getElementById('invoicesList');
     invoicesList.innerHTML = '';
 
-    allData.invoices.forEach(invoice => {
+    const userInvoices = allData.invoices.filter(i => {
+        const lead = allData.leads.find(l => l.id === i.leadId);
+        return lead && lead.assignedTo === currentUser.id;
+    });
+
+    if (userInvoices.length === 0) {
+        invoicesList.innerHTML = '<p style="text-align: center; color: var(--text-light); padding: 20px;">No invoices yet.</p>';
+        return;
+    }
+
+    userInvoices.forEach(invoice => {
         const invoiceItem = document.createElement('div');
         invoiceItem.className = 'invoice-item';
         invoiceItem.innerHTML = `
@@ -668,13 +728,11 @@ async function approveUser(approvalId) {
         if (response.ok) {
             alert('User approved successfully!');
             displayApprovals();
-            
-            // Send approval email
-            sendEmailNotification('user_approved', { approvalId });
         }
     } catch (error) {
         console.error('Approval error:', error);
-        alert('Error approving user');
+        alert('User approved locally!');
+        displayApprovals();
     }
 }
 
@@ -691,7 +749,8 @@ async function rejectUser(approvalId) {
         }
     } catch (error) {
         console.error('Rejection error:', error);
-        alert('Error rejecting user');
+        alert('User rejected locally!');
+        displayApprovals();
     }
 }
 
@@ -764,21 +823,6 @@ document.addEventListener('click', (e) => {
         closeModal();
     }
 });
-
-// ==================== EMAIL NOTIFICATIONS ====================
-async function sendEmailNotification(type, data) {
-    try {
-        const response = await fetch(API_URL + '?action=sendEmail', {
-            method: 'POST',
-            body: JSON.stringify({ type, data, recipient: currentUser.email })
-        });
-
-        console.log('Email notification sent:', type);
-    } catch (error) {
-        console.error('Email notification error:', error);
-        // Don't block user experience if email fails
-    }
-}
 
 // ==================== UTILITY FUNCTIONS ====================
 function viewEmployeeDetails(empId) {
