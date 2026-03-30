@@ -43,60 +43,12 @@
         </div>
     </div>
 
-    <!-- Registration Container -->
-    <div id="registerContainer" class="register-container">
-        <div class="register-box">
-            <div class="logo-container">
-                <img src="logo.png" alt="Raj Indra Group Logo" class="logo">
-                <h2>New Associate Registration</h2>
-            </div>
-
-            <form id="registerForm" class="register-form">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="regFirstName">First Name</label>
-                        <input type="text" id="regFirstName" placeholder="First Name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="regLastName">Last Name</label>
-                        <input type="text" id="regLastName" placeholder="Last Name" required>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="regEmail">Email</label>
-                    <input type="email" id="regEmail" placeholder="Email address" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="regPhone">Phone Number</label>
-                    <input type="tel" id="regPhone" placeholder="Phone number" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="regDepartment">Department</label>
-                    <select id="regDepartment" required>
-                        <option value="">Select Department</option>
-                        <option value="Workforce">Workforce</option>
-                        <option value="Taxation">Taxation</option>
-                        <option value="Financial Services">Financial Services</option>
-                    </select>
-                </div>
-
-                <div class="form-row">
-                    <button type="submit" class="submit-btn">Submit for Approval</button>
-                    <button type="button" class="cancel-btn" id="cancelRegister">Back to Login</button>
-                </div>
-            </form>
-            <div id="registerError" class="error-message"></div>
-        </div>
-    </div>
-
     <!-- Dashboard Container -->
     <div id="dashboardContainer" class="dashboard-container">
         <!-- Navigation -->
         <nav class="navbar">
             <div class="navbar-left">
+                <button id="toggleSidebarBtn" class="hamburger-menu" style="display:none; background:none; border:none; color:white; font-size:24px; cursor:pointer; padding:8px;">☰</button>
                 <img src="logo.png" alt="Logo" class="navbar-logo">
                 <h2>Raj Indra Group</h2>
             </div>
@@ -143,6 +95,9 @@
                             <h3 id="profileName"></h3>
                             <button id="editProfileBtn" class="edit-btn">Edit Profile</button>
                         </div>
+                        <div id="profilePhoto" style="text-align: center; margin-bottom: 20px;">
+                            <img id="profilePhotoImg" src="https://via.placeholder.com/150" alt="Profile" style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover;">
+                        </div>
                         <div id="profileDetails" class="profile-details"></div>
                         <button id="generateIDBtn" class="btn-primary">Generate ID Card</button>
                     </div>
@@ -163,6 +118,11 @@
                         <div class="form-group">
                             <label>Department</label>
                             <input type="text" id="editDepartment" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Profile Photo</label>
+                            <input type="file" id="editPhoto" accept="image/*">
+                            <small style="color: var(--text-light); display: block; margin-top: 5px;">Select JPG, PNG or GIF (Max 2MB)</small>
                         </div>
                         <button type="submit" class="btn-primary">Save Changes</button>
                         <button type="button" id="cancelEditBtn" class="btn-secondary">Cancel</button>
